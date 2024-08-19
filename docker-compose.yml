@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  account-manager:
+    build: ./account-manager
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/accounts_db
+      - JWT_SECRET=supersecret
+    depends_on:
+      - db
+
+  payment-manager:
+    build: ./payment-manager
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db_payments:5432/payments_db
+      - JWT_SECRET=supersecret
+    depends_on:
+      - db_payments
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: accounts_db
+
+  db_payments:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: payments_db
